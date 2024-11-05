@@ -4,6 +4,7 @@ plugins {
     id("jacoco")
     id("io.freefair.lombok") version "8.6"
     id("application")
+    id("org.jetbrains.kotlin.jvm") version "1.9.22"
 }
 
 group = "hexlet.code"
@@ -16,15 +17,16 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(kotlin("stdlib"))
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
-application {
-    mainClass.set("hexlet.code.App")
-}
+/*application {
+    mainClass.set("hexlet.code.Validator")
+}*/
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport) // Отчет будет сгенерирован после выполнения тестов
