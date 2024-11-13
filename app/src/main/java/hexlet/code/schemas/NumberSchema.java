@@ -19,4 +19,10 @@ public class NumberSchema extends BaseSchema<Integer> {
         addCondition("noNull", value -> value != null); // Дополнительная логика для проверки на null
         return this;
     }
+
+    // Возвращаем тип Integer для метода getType()
+    @Override
+    protected Class<Integer> getType() {
+        return Integer.class;
+    }
 }

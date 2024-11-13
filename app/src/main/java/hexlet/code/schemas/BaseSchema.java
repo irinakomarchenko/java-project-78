@@ -15,14 +15,22 @@ public abstract class BaseSchema<T> {
         return this;
     }
 
-    public boolean isValid(T value) {
+    // Метод для проверки условия валидности
+    public boolean isValid(Object value) {
         if (value == null) {
             return !isRequired; // если значение null, и не требуется — возвращаем true
         }
-        return conditions.values().stream().allMatch(condition -> condition.test(value));
+        if (!getType().isInstance(value)) {
+            return false; // Проверка типа значения
+        }
+        T typedValue = getType().cast(value); // Приведение типа
+        return conditions.values().stream().allMatch(condition -> condition.test(typedValue));
     }
 
     protected void addCondition(String name, Predicate<T> condition) {
         conditions.put(name, condition);
     }
+
+    // Метод, возвращающий класс типа для проверки
+    protected abstract Class<T> getType();
 }

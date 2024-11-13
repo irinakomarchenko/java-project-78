@@ -19,5 +19,10 @@ public class StringSchema extends BaseSchema<String> {
         addCondition("minLength", value -> value != null && value.length() >= length);
         return this;
     }
-}
 
+    // Возвращаем тип String для метода getType()
+    @Override
+    protected Class<String> getType() {
+        return String.class;
+    }
+}
