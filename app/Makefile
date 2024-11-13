@@ -1,18 +1,16 @@
-.DEFAULT_GOAL := build-run
-
 clean:
-		gradlew.bat clean
+	./gradlew clean
 
 build:
-	gradlew.bat build
+	./gradlew build
 
 lint:
-	gradlew.bat checkstyleMain checkstyleTest
+	./gradlew checkstyleMain checkstyleTest
 
 test:
-	gradlew.bat test
+	./gradlew test
 
 report:
-	gradlew.bat jacocoTestReport
+	./gradlew jacocoTestReport
 
 .PHONY: build
