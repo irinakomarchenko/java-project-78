@@ -8,14 +8,21 @@ public abstract class BaseSchema<T> {
     protected Map<String, Predicate<T>> conditions = new HashMap<>();
     protected boolean isRequired = false;
 
-    // Метод required теперь не абстрактный, а обычный
+    /**
+     * Checks schema.
+     * @return a schema.
+     */
     public BaseSchema<T> required() {
         this.isRequired = true;
         conditions.put("required", value -> value != null);
         return this;
     }
 
-    // Метод для проверки условия валидности
+    /**
+     * Checks if a given value is valid.
+     * @param value
+     * @return true or false.
+     */
     public boolean isValid(Object value) {
         if (value == null) {
             return !isRequired; // если значение null, и не требуется — возвращаем true
@@ -27,6 +34,11 @@ public abstract class BaseSchema<T> {
         return conditions.values().stream().allMatch(condition -> condition.test(typedValue));
     }
 
+    /**
+     * Adds a condition to check.
+     * @param name
+     * @param condition
+     */
     protected void addCondition(String name, Predicate<T> condition) {
         conditions.put(name, condition);
     }
