@@ -18,7 +18,7 @@ public class MapSchemaTest {
         MapSchema schema = v.map();
 
         // Настройка вложенных схем
-        Map<String, BaseSchema<?>> schemas = new HashMap<>();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 

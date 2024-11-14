@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class MapSchema extends BaseSchema<Map<String, Object>> {
     private Integer expectedSize = null;
-    private Map<String, BaseSchema<?>> schemas = new HashMap<>();
+    private Map<String, BaseSchema<String>> schemas = new HashMap<>();
 
     @Override
     public MapSchema required() {
@@ -20,14 +20,14 @@ public class MapSchema extends BaseSchema<Map<String, Object>> {
         return this;
     }
 
-    public MapSchema shape(Map<String, BaseSchema<?>> schemaMap) {
+    public MapSchema shape(Map<String, BaseSchema<String>> schemaMap) {
         this.schemas = schemaMap;
         addCondition("shapeCheck", value -> {
             if (!(value instanceof Map)) {
                 return false;
             }
             Map<?, ?> mapValue = (Map<?, ?>) value;
-            for (Map.Entry<String, BaseSchema<?>> entry : schemas.entrySet()) {
+            for (var entry : schemas.entrySet()) {
                 String key = entry.getKey();
                 BaseSchema<?> schema = entry.getValue();
 
