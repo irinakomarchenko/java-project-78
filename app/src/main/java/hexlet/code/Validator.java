@@ -5,17 +5,17 @@ import hexlet.code.schemas.StringSchema;
 import hexlet.code.schemas.NumberSchema;
 
 public final class Validator {
-    public final StringSchema string() {
+    public StringSchema string() {
 
         return new StringSchema();
     }
 
-    public final NumberSchema number() {
+    public NumberSchema number() {
 
         return new NumberSchema();
     }
 
-    public final MapSchema map() {
+    public MapSchema map() {
 
         return new MapSchema();
     }
