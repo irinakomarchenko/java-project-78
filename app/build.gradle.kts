@@ -3,7 +3,6 @@ plugins {
     id("checkstyle")
     id("jacoco")
     id("io.freefair.lombok") version "8.6"
-    id("application")
     id("org.jetbrains.kotlin.jvm") version "1.9.22"
 }
 
@@ -23,10 +22,6 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
-
-/*application {
-    mainClass.set("hexlet.code.Validator")
-}*/
 
 tasks.test {
     finalizedBy(tasks.jacocoTestReport) // Отчет будет сгенерирован после выполнения тестов
