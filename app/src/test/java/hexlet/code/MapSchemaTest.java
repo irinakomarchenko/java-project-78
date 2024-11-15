@@ -13,30 +13,51 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MapSchemaTest {
 
     @Test
+    void testRequiredWithNull() {
+        Validator v = new Validator();
+        MapSchema schema = v.map();
+
+        // Проверка для пустой мапы и null
+        assertTrue(schema.isValid(null));
+
+        // Проверка для пустой карты
+        assertTrue(schema.isValid(new HashMap<>()));  // пустая карта тоже валидна
+
+        // Проверка после применения required
+        schema.required();
+        assertFalse(schema.isValid(null));  // null невалиден после required
+        assertTrue(schema.isValid(new HashMap<>()));  // Пустая карта валидна, т.к. она не null
+    }
+
+    @Test
     void testShapeValidation() {
         Validator v = new Validator();
         MapSchema schema = v.map();
 
-        // Настройка вложенных схем
+        // Схема с обязательными полями
         Map<String, BaseSchema<String>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
         schema.shape(schemas);
 
-        Map<String, String> human1 = new HashMap<>();
-        human1.put("firstName", "John");
-        human1.put("lastName", "Smith");
-        assertTrue(schema.isValid(human1));  // Должно быть true
+        // Тестирование с валидными данными
+        Map<String, String> validMap = new HashMap<>();
+        validMap.put("firstName", "John");
+        validMap.put("lastName", "Smith");
+        assertTrue(schema.isValid(validMap));  // Ожидаем, что данные будут валидны
 
-        Map<String, String> human2 = new HashMap<>();
-        human2.put("firstName", "John");
-        human2.put("lastName", null);
-        assertFalse(schema.isValid(human2));  // Должно быть false
+        // Тестирование с отсутствующим ключом (lastName)
+        Map<String, String> invalidMap1 = new HashMap<>();
+        invalidMap1.put("firstName", "John");
+        assertFalse(schema.isValid(invalidMap1));  // Ожидаем, что данные не будут валидны, т.к. нет lastName
 
-        Map<String, String> human3 = new HashMap<>();
-        human3.put("firstName", "Anna");
-        human3.put("lastName", "B");
-        assertFalse(schema.isValid(human3));  // Должно быть false
+        // Тестирование с неверным значением (too short lastName)
+        Map<String, String> invalidMap2 = new HashMap<>();
+        invalidMap2.put("firstName", "John");
+        invalidMap2.put("lastName", "A");
+        assertFalse(schema.isValid(invalidMap2));  // Ожидаем, что данные не будут валидны
     }
+
 }
+

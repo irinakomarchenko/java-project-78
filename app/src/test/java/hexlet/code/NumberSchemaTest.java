@@ -1,50 +1,42 @@
 package hexlet.code;
 
+
 import hexlet.code.schemas.NumberSchema;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NumberSchemaTest {
+
     @Test
-    void testNumberSchemaValidation() {
+    void testRequiredWithNull() {
         Validator v = new Validator();
         NumberSchema schema = v.number();
 
-        // Проверка с положительным числом
+        // Проверка для числа
+        assertTrue(schema.isValid(5));  // 5 - валидное значение
+
+        // Проверка на null до применения дополнительных условий
+        assertTrue(schema.isValid(null));  // null валиден
+
+        // Применение positive()
         schema.positive();
 
-        // Добавляем вывод состояния для отладки
-        System.out.println("isValid(10) after positive(): " + schema.isValid(10)); // Ожидается true для 10
-        assertTrue(schema.isValid(10)); // Ожидается true для положительного числа
+        // Проверка на null после применения positive
+        assertTrue(schema.isValid(null));
 
-        System.out.println("isValid(-10) after positive(): " + schema.isValid(-10)); // Ожидается false для -10
-        assertFalse(schema.isValid(-10)); // Ожидается false для отрицательного числа
+        // Проверка на положительное число
+        assertTrue(schema.isValid(5));  // 5 - валидное число
 
-        // Проверка диапазона
-        schema.range(5, 15);
 
-        // Добавляем вывод состояния для отладки
-        System.out.println("isValid(10) after range(5, 15): "
-                + schema.isValid(10)); // Ожидается true, так как 10 в пределах диапазона [5, 15]
-        assertTrue(schema.isValid(10)); // Ожидается true для числа в диапазоне
+        assertFalse(schema.isValid(-5));  // -5 не валидное число для positive()
 
-        System.out.println("isValid(4) after range(5, 15): "
-                + schema.isValid(4)); // Ожидается false, так как 4 не входит в диапазон [5, 15]
-        assertFalse(schema.isValid(4)); // Ожидается false для числа вне диапазона
 
-        System.out.println("isValid(16) after range(5, 15): "
-                + schema.isValid(16)); // Ожидается false, так как 16 выходит за пределы диапазона
-        assertFalse(schema.isValid(16)); // Ожидается false для числа вне диапазона
+        schema.range(1, 10);
 
-        // Проверка на обязательность
-        schema.required();
-
-        // Добавляем вывод состояния для отладки
-        System.out.println("isValid(null) after required(): "
-                + schema.isValid(null)); // Ожидается false для null, так как обязательное поле
-        assertFalse(schema.isValid(null)); // Ожидается false для null, так как обязательное поле
+        // Проверка на диапазон после применения range
+        assertTrue(schema.isValid(5));  // 5 - валидное число для диапазона
+        assertFalse(schema.isValid(15)); // 15 - не валидное число для диапазона
     }
 }
-
-

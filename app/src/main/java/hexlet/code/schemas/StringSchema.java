@@ -2,11 +2,9 @@ package hexlet.code.schemas;
 
 public final class StringSchema extends BaseSchema<String> {
 
-    // Переопределяем required() в StringSchema
-    @Override
     public StringSchema required() {
-        super.required(); // Вызов метода required() родительского класса
-        addCondition("notEmpty", value -> value != null && !value.isEmpty()); // Дополнительная логика для пустых строк
+        super.required();
+        addCondition("string", value -> value instanceof String && !((String) value).isEmpty());
         return this;
     }
 
@@ -19,10 +17,5 @@ public final class StringSchema extends BaseSchema<String> {
         addCondition("minLength", value -> value != null && value.length() >= length);
         return this;
     }
-
-    // Возвращаем тип String для метода getType()
-    @Override
-    protected Class<String> getType() {
-        return String.class;
-    }
 }
+

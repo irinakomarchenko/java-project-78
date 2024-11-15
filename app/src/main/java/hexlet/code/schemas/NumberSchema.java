@@ -1,28 +1,20 @@
 package hexlet.code.schemas;
 
-public final class NumberSchema extends BaseSchema<Integer> {
+public final class NumberSchema extends BaseSchema<Number> {
+
+    public NumberSchema required() {
+        super.required();
+        addCondition("number", value -> value instanceof Number);
+        return this;
+    }
 
     public NumberSchema positive() {
-        addCondition("positive", value -> value == null || value > 0);
+        addCondition("positive", value -> value != null && value.doubleValue() > 0);
         return this;
     }
 
     public NumberSchema range(int min, int max) {
-        addCondition("range", value -> value >= min && value <= max);
+        addCondition("range", value -> value != null && value.doubleValue() >= min && value.doubleValue() <= max);
         return this;
-    }
-
-    // Переопределяем required() в NumberSchema
-    @Override
-    public NumberSchema required() {
-        super.required(); // Вызов метода required() родительского класса
-        addCondition("noNull", value -> value != null); // Дополнительная логика для проверки на null
-        return this;
-    }
-
-    // Возвращаем тип Integer для метода getType()
-    @Override
-    protected Class<Integer> getType() {
-        return Integer.class;
     }
 }

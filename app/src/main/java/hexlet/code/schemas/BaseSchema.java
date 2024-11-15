@@ -4,45 +4,50 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
+/**
+ * Abstract class that provides basic validation logic for schemas.
+ * This class can be extended to implement specific validation rules for different types.
+ * It allows setting conditions like "required" and validating values based on those conditions.
+ *
+ * @param <T> The type of the value to be validated.
+ */
 public abstract class BaseSchema<T> {
     protected Map<String, Predicate<T>> conditions = new HashMap<>();
     protected boolean isRequired = false;
 
     /**
-     * Checks schema.
-     * @return a schema.
+     * Marks the schema as required, meaning the value cannot be null.
+     * Adds the "required" condition to the list of validation conditions.
+     *
+     * @return The current instance of the schema for method chaining.
      */
     public BaseSchema<T> required() {
         this.isRequired = true;
-        conditions.put("required", value -> value != null);
+        addCondition("required", value -> value != null);
         return this;
     }
 
     /**
-     * Checks if a given value is valid.
-     * @param value
-     * @return true or false.
+     * Validates the provided value based on the conditions set in the schema.
+     * If the value is null, it will be valid only if the schema is not required.
+     *
+     * @param value The value to validate.
+     * @return True if the value meets all conditions, otherwise false.
      */
-    public boolean isValid(Object value) {
+    public boolean isValid(T value) {
         if (value == null) {
-            return !isRequired; // если значение null, и не требуется — возвращаем true
+            return !isRequired;
         }
-        if (!getType().isInstance(value)) {
-            return false; // Проверка типа значения
-        }
-        T typedValue = getType().cast(value); // Приведение типа
-        return conditions.values().stream().allMatch(condition -> condition.test(typedValue));
+        return conditions.values().stream().allMatch(condition -> condition.test(value));
     }
 
     /**
-     * Adds a condition to check.
-     * @param name
-     * @param condition
+     * Adds a new condition for validation. Conditions are stored in a map with their names.
+     *
+     * @param name The name of the condition.
+     * @param condition The condition to be applied for validation.
      */
     protected void addCondition(String name, Predicate<T> condition) {
         conditions.put(name, condition);
     }
-
-    // Метод, возвращающий класс типа для проверки
-    protected abstract Class<T> getType();
 }
