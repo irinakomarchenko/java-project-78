@@ -15,10 +15,12 @@ Library for checking data correctness
 
 A validator object is created, a data validation scheme is created and configured. 
 After that, the data is validated using the previously created scheme.
-
-[var v = new Validator();
+```
+var v = new Validator();
 var schema = v.string();
-schema.isValid("Hello world");]()
+schema.isValid("Hello world")();
+```
+
 
 **Data Validation Schemes**
 
