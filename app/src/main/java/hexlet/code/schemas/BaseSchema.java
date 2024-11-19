@@ -12,9 +12,6 @@ public abstract class BaseSchema<T> {
     // Set to store unique conditions
     protected Set<Predicate<T>> conditions = new HashSet<>();
 
-    // List for additional checks that are not part of the main conditions
-    protected Set<Predicate<T>> additionalChecks = new HashSet<>();
-
     // Flag for required validation
     protected boolean isRequired = false;
 
@@ -24,7 +21,7 @@ public abstract class BaseSchema<T> {
      */
     public BaseSchema<T> required() {
         this.isRequired = true;
-        // Add a "required" condition to ensure the value is not null
+        // Add a condition to ensure the value is not null if required
         addCondition(value -> value != null);
         return this;
     }
@@ -38,34 +35,22 @@ public abstract class BaseSchema<T> {
     }
 
     /**
-     * Adds an additional validation check.
-     * @param condition The condition to add.
-     */
-    protected void addAdditionalCheck(Predicate<T> condition) {
-        additionalChecks.add(condition);  // Ensure additional checks are unique by using a Set
-    }
-
-    /**
-     * Validates the value against all conditions and additional checks.
+     * Validates the value against all conditions.
      * @param value The value to validate.
      * @return True if valid, false otherwise.
      */
     public final boolean isValid(T value) {
-        // Validate using conditions
+        // If value is null and it is required, return false
+        if (value == null) {
+            return !this.isRequired;
+        }
+
+        // Run all the conditions
         for (Predicate<T> condition : conditions) {
             if (!condition.test(value)) {
-                return false;
+                return false;  // If any condition fails, return false
             }
         }
-
-        // Validate using additional checks
-        for (Predicate<T> check : additionalChecks) {
-            if (!check.test(value)) {
-                return false;
-            }
-        }
-
-        return true;
+        return true;  // All checks passed
     }
 }
-
