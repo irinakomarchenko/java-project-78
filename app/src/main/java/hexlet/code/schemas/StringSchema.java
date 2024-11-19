@@ -1,6 +1,5 @@
 package hexlet.code.schemas;
 
-
 /**
  * String schema class for validating string-based values.
  */
@@ -20,7 +19,7 @@ public final class StringSchema extends BaseSchema<String> {
      * @return The current schema instance for method chaining.
      */
     public StringSchema contains(String substring) {
-        addCondition(value -> value != null && value.contains(substring));
+        addCondition(value -> value != null && substring != null && value.contains(substring));
         return this;
     }
 
