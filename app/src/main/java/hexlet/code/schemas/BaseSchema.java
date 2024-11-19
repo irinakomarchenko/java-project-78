@@ -40,6 +40,7 @@ public abstract class BaseSchema<T> {
         for (Predicate<T> condition : conditions) {
             System.out.println("Condition: " + condition.toString() + ", Result: " + condition.test(value));
             if (!condition.test(value)) {
+                System.out.println("Failed condition: " + condition.toString());
                 return false;
             }
         }
