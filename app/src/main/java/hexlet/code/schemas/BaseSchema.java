@@ -1,20 +1,16 @@
 package hexlet.code.schemas;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 /**
  * Abstract class that provides basic validation logic for schemas.
- * This class can be extended to implement specific validation rules for different types.
  * @param <T> The type of the value to be validated.
  */
 public abstract class BaseSchema<T> {
-    protected Map<String, Predicate<T>> conditions = new HashMap<>();
-    protected List<Predicate<T>> additionalChecks = new ArrayList<>();
-    protected boolean isRequired = false;
+    private final List<Predicate<T>> conditions = new ArrayList<>();
+    private boolean isRequired = false;
 
     /**
      * Marks the schema as required.
@@ -22,43 +18,29 @@ public abstract class BaseSchema<T> {
      */
     public BaseSchema<T> required() {
         this.isRequired = true;
-        addCondition("required", value -> value != null);
+        addCondition(value -> value != null); // Null values are invalid if required.
         return this;
     }
 
     /**
-     * Validates the provided value.
+     * Adds a validation condition.
+     * @param condition The condition to add.
+     */
+    protected void addCondition(Predicate<T> condition) {
+        conditions.add(condition);
+    }
+
+    /**
+     * Validates the value against all conditions.
      * @param value The value to validate.
-     * @return True if the value passes all conditions, otherwise false.
+     * @return True if valid, false otherwise.
      */
-    public boolean isValid(T value) {
+    public final boolean isValid(T value) {
         if (value == null) {
-            return !isRequired;
+            return !isRequired; // Null is valid only if not required.
         }
 
-        // Check basic conditions
-        if (!conditions.values().stream().allMatch(condition -> condition.test(value))) {
-            return false;
-        }
-
-        // Check additional schema-specific conditions
-        return additionalChecks.stream().allMatch(check -> check.test(value));
-    }
-
-    /**
-     * Adds a new condition for validation.
-     * @param name The name of the condition.
-     * @param condition The condition to be added.
-     */
-    protected void addCondition(String name, Predicate<T> condition) {
-        conditions.put(name, condition);
-    }
-
-    /**
-     * Adds a schema-specific validation check.
-     * @param check The additional validation check.
-     */
-    protected void addAdditionalCheck(Predicate<T> check) {
-        additionalChecks.add(check);
+        // Check all conditions.
+        return conditions.stream().allMatch(condition -> condition.test(value));
     }
 }

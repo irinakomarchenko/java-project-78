@@ -1,20 +1,19 @@
 package hexlet.code.schemas;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
+/**
+ * Schema for validating maps.
+ */
 public final class MapSchema extends BaseSchema<Map<?, ?>> {
-    private Map<String, Predicate<Map<?, ?>>> checkList = new HashMap<>();
 
     /**
      * Marks the Map as required.
      * @return the current MapSchema instance for chaining.
      */
-    @Override
     public MapSchema required() {
         super.required();
-        addCondition("map", value -> value instanceof Map);
+        addCondition(value -> value instanceof Map); // Ensure the value is a Map.
         return this;
     }
 
@@ -24,55 +23,31 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
      * @return the current MapSchema instance for chaining.
      */
     public MapSchema sizeof(int size) {
-        addCondition("size", value -> value != null && value.size() == size);
+        addCondition(map -> map != null && map.size() == size); // Validate map size.
         return this;
     }
 
     /**
      * Validates that the map conforms to the specified schema for each key.
-     * @param schemas a map of keys and their associated schemas.
-     * @param <T> the type of values expected for each key.
+     * @param schemas A map of keys and their associated schemas.
+     * @param <T> The type of values expected for each key.
      * @return the current MapSchema instance for chaining.
      */
     public <T> MapSchema shape(Map<String, BaseSchema<T>> schemas) {
-        checkList.put("shape", map -> {
+        addCondition(map -> {
             if (map == null) {
-                return false; // Map is null, invalid
+                return false; // Map is null, invalid.
             }
 
-            // Check if all keys have valid values according to the schema
-            for (var entry : schemas.entrySet()) {
+            return schemas.entrySet().stream().allMatch(entry -> {
                 String key = entry.getKey();
                 BaseSchema<T> schema = entry.getValue();
-
-                // Check if the map contains the key and it has a valid value
-                if (!map.containsKey(key) || map.get(key) == null) {
-                    return false; // Invalid map for key
-                }
-
                 T value = (T) map.get(key);
-                if (!schema.isValid(value)) {
-                    return false; // Invalid value for key
-                }
-            }
-            return true;
-        });
 
+                // If key is missing or value is invalid, fail the validation.
+                return map.containsKey(key) && schema.isValid(value);
+            });
+        });
         return this;
     }
-
-    @Override
-    public boolean isValid(Map<?, ?> value) {
-        if (!super.isValid(value)) {
-            return false;
-        }
-        // Apply the shape checks
-        for (Predicate<Map<?, ?>> check : checkList.values()) {
-            if (!check.test(value)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
-
