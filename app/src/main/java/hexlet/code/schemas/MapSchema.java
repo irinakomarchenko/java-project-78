@@ -36,7 +36,7 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
     public <T> MapSchema shape(Map<String, BaseSchema<T>> schemas) {
         addCondition(map -> {
             if (map == null) {
-                return false; // Map is null, invalid.
+                return false;
             }
 
             return schemas.entrySet().stream().allMatch(entry -> {
@@ -44,7 +44,6 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
                 BaseSchema<T> schema = entry.getValue();
                 T value = (T) map.get(key);
 
-                // If key is missing or value is invalid, fail the validation.
                 return map.containsKey(key) && schema.isValid(value);
             });
         });

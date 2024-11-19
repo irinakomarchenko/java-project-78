@@ -36,11 +36,13 @@ public abstract class BaseSchema<T> {
      * @return True if valid, false otherwise.
      */
     public final boolean isValid(T value) {
-        if (value == null) {
-            return !isRequired; // Null is valid only if not required.
+        System.out.println("Validating: " + value);
+        for (Predicate<T> condition : conditions) {
+            System.out.println("Condition: " + condition + ", Result: " + condition.test(value));
+            if (!condition.test(value)) {
+                return false;
+            }
         }
-
-        // Check all conditions.
-        return conditions.stream().allMatch(condition -> condition.test(value));
+        return true;
     }
 }

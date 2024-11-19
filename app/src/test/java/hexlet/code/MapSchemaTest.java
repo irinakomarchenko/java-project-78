@@ -34,29 +34,29 @@ public class MapSchemaTest {
         Validator v = new Validator();
         MapSchema schema = v.map();
 
-        // Схема с обязательными полями
+
         Map<String, BaseSchema<String>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
         schema.shape(schemas);
 
-        // Тестирование с валидными данными
+
         Map<String, String> validMap = new HashMap<>();
         validMap.put("firstName", "John");
         validMap.put("lastName", "Smith");
         assertTrue(schema.isValid(validMap));  // Ожидаем, что данные будут валидны
 
-        // Тестирование с отсутствующим ключом (lastName)
+
         Map<String, String> invalidMap1 = new HashMap<>();
         invalidMap1.put("firstName", "John");
         assertFalse(schema.isValid(invalidMap1));  // Ожидаем, что данные не будут валидны, т.к. нет lastName
 
-        // Тестирование с неверным значением (too short lastName)
+
         Map<String, String> invalidMap2 = new HashMap<>();
         invalidMap2.put("firstName", "John");
         invalidMap2.put("lastName", "A");
-        assertFalse(schema.isValid(invalidMap2));  // Ожидаем, что данные не будут валидны
+        assertFalse(schema.isValid(invalidMap2));
     }
 
 }
