@@ -1,7 +1,7 @@
 package hexlet.code.schemas;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -9,7 +9,7 @@ import java.util.function.Predicate;
  * @param <T> The type of the value to be validated.
  */
 public abstract class BaseSchema<T> {
-    private final List<Predicate<T>> conditions = new ArrayList<>();
+    private final Set<Predicate<T>> conditions = new HashSet<>();  // Используем Set для уникальности условий
     private boolean isRequired = false;
 
     /**
