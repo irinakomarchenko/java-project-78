@@ -8,30 +8,54 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class StringSchemaTest {
 
     @Test
-    void testStringSchemaValidation() {
-        // Создание валидатора и схемы
+    void testRequiredCondition() {
         Validator v = new Validator();
         StringSchema schema = v.string();
 
-        // Проверка до вызова required
-        assertTrue(schema.isValid(null)); // null допустим
-        assertTrue(schema.isValid("")); // Пустая строка допустима
 
-        // Вызов required - теперь null и пустая строка должны быть недопустимы
+        assertTrue(schema.isValid(null));
+        assertTrue(schema.isValid(""));
+
+
         schema.required();
-        assertFalse(schema.isValid(null)); // null недопустим
-        assertFalse(schema.isValid("")); // Пустая строка недопустима
-        assertTrue(schema.isValid("hello")); // Непустая строка допустима
+        assertFalse(schema.isValid(null));
+        assertFalse(schema.isValid(""));
+        assertTrue(schema.isValid("valid"));
+    }
 
-        // Проверка метода contains
-        schema.contains("ell");
-        assertTrue(schema.isValid("hello")); // Строка содержит "ell"
-        assertFalse(schema.isValid("hi")); // Строка не содержит "ell"
+    @Test
+    void testContainsCondition() {
+        Validator v = new Validator();
+        StringSchema schema = v.string();
 
-        // Проверка метода minLength
-        schema.minLength(5);
-        assertTrue(schema.isValid("hello world")); // Строка длиной >= 5
-        assertFalse(schema.isValid("hi")); // Строка короче 5 символов
+        schema.required().contains("test");
+        assertFalse(schema.isValid(null));
+        assertFalse(schema.isValid("example"));
+        assertTrue(schema.isValid("this is a test"));
+    }
+
+    @Test
+    void testMinLengthCondition() {
+        Validator v = new Validator();
+        StringSchema schema = v.string();
+
+        schema.required().minLength(5);
+        assertFalse(schema.isValid(null));
+        assertFalse(schema.isValid("1234"));
+        assertTrue(schema.isValid("12345"));
+        assertTrue(schema.isValid("1234567"));
+    }
+
+    @Test
+    void testAllConditions() {
+        Validator v = new Validator();
+        StringSchema schema = v.string();
+
+        schema.required().contains("hello").minLength(5);
+        assertFalse(schema.isValid(null));
+        assertFalse(schema.isValid("hi"));
+        assertFalse(schema.isValid("world!"));
+        assertTrue(schema.isValid("hello there"));
+        assertTrue(schema.isValid("hello world!"));
     }
 }
-
