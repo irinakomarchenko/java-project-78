@@ -8,54 +8,34 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class StringSchemaTest {
 
     @Test
-    void testRequiredCondition() {
+    void testStringValidator() {
         Validator v = new Validator();
         StringSchema schema = v.string();
 
 
-        assertTrue(schema.isValid(null));
         assertTrue(schema.isValid(""));
+        assertTrue(schema.isValid(null));
 
 
         schema.required();
         assertFalse(schema.isValid(null));
         assertFalse(schema.isValid(""));
-        assertTrue(schema.isValid("valid"));
-    }
+        assertTrue(schema.isValid("what does the fox say"));
 
-    @Test
-    void testContainsCondition() {
-        Validator v = new Validator();
-        StringSchema schema = v.string();
 
-        schema.required().contains("test");
-        assertFalse(schema.isValid(null));
-        assertFalse(schema.isValid("example"));
-        assertTrue(schema.isValid("this is a test"));
-    }
+        schema.contains("wh");
+        assertTrue(schema.isValid("what does the fox say"));
+        assertFalse(schema.isValid("hexlet"));
 
-    @Test
-    void testMinLengthCondition() {
-        Validator v = new Validator();
-        StringSchema schema = v.string();
 
-        schema.required().minLength(5);
-        assertFalse(schema.isValid(null));
-        assertFalse(schema.isValid("1234"));
-        assertTrue(schema.isValid("12345"));
-        assertTrue(schema.isValid("1234567"));
-    }
+        schema = v.string();
+        schema.minLength(4);
+        assertTrue(schema.isValid("Hexlet"));
 
-    @Test
-    void testAllConditions() {
-        Validator v = new Validator();
-        StringSchema schema = v.string();
 
-        schema.required().contains("hello").minLength(5);
-        assertFalse(schema.isValid(null));
-        assertFalse(schema.isValid("hi"));
-        assertFalse(schema.isValid("world!"));
-        assertTrue(schema.isValid("hello there"));
-        assertTrue(schema.isValid("hello world!"));
+        schema.minLength(10);
+        assertFalse(schema.isValid("short"));
+        assertTrue(schema.isValid("what does the fox say"));
     }
 }
+

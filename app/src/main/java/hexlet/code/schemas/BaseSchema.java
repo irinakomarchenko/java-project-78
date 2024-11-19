@@ -38,7 +38,7 @@ public abstract class BaseSchema<T> {
     public final boolean isValid(T value) {
         System.out.println("Validating: " + value);
         for (Predicate<T> condition : conditions) {
-            System.out.println("Condition: " + condition + ", Result: " + condition.test(value));
+            System.out.println("Condition: " + condition.toString() + ", Result: " + condition.test(value));
             if (!condition.test(value)) {
                 return false;
             }

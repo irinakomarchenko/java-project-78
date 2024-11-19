@@ -2,6 +2,7 @@ package hexlet.code.schemas;
 
 public final class StringSchema extends BaseSchema<String> {
 
+    @Override
     public StringSchema required() {
         super.required();
         addCondition(value -> value != null && !value.isEmpty());
@@ -18,3 +19,4 @@ public final class StringSchema extends BaseSchema<String> {
         return this;
     }
 }
+
