@@ -1,7 +1,8 @@
 package hexlet.code.schemas;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -9,8 +10,8 @@ import java.util.function.Predicate;
  * @param <T> The type of the value to be validated.
  */
 public abstract class BaseSchema<T> {
-    // Set to store unique conditions
-    protected Set<Predicate<T>> conditions = new HashSet<>();
+    // List to store conditions in the order they were added
+    protected List<Predicate<T>> conditions = new ArrayList<>();
 
     // Flag for required validation
     protected boolean isRequired = false;
@@ -22,7 +23,7 @@ public abstract class BaseSchema<T> {
     public BaseSchema<T> required() {
         this.isRequired = true;
         // Add a condition to ensure the value is not null if required
-        addCondition(value -> value != null);
+        addCondition(Objects::nonNull);
         return this;
     }
 
@@ -31,7 +32,7 @@ public abstract class BaseSchema<T> {
      * @param condition The condition to add.
      */
     protected void addCondition(Predicate<T> condition) {
-        conditions.add(condition);  // Ensure conditions are unique by using a Set
+        conditions.add(condition);
     }
 
     /**
@@ -40,17 +41,16 @@ public abstract class BaseSchema<T> {
      * @return True if valid, false otherwise.
      */
     public final boolean isValid(T value) {
-        // If value is null and it is required, return false
+
         if (value == null) {
             return !this.isRequired;
         }
 
-        // Run all the conditions
         for (Predicate<T> condition : conditions) {
             if (!condition.test(value)) {
-                return false;  // If any condition fails, return false
+                return false;
             }
         }
-        return true;  // All checks passed
+        return true;
     }
 }
