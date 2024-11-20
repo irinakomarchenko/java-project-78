@@ -32,7 +32,7 @@ public abstract class BaseSchema<T> {
      * @param check A predicate representing the validation logic.
      */
     protected void addCheck(String key, Predicate<T> check) {
-        checks.merge(key, check, Predicate::and);
+        checks.put(key, check);
     }
 
     /**

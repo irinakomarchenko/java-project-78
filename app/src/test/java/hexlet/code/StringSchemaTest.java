@@ -32,11 +32,11 @@ public class StringSchemaTest {
         assertFalse(schema.isValid("what does the fox say")); // false
 
         var schema1 = v.string();
-        schema1.minLength(4);
-        assertTrue(schema1.isValid("Hexlet"));
-
         schema1.minLength(10);
         assertFalse(schema1.isValid("Hexlet"));
+
+        schema1.minLength(4);
+        assertTrue(schema1.isValid("Hexlet"));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             schema.contains(null);
