@@ -1,63 +1,64 @@
 package hexlet.code;
 
-import hexlet.code.schemas.MapSchema;
 import hexlet.code.schemas.BaseSchema;
+import hexlet.code.schemas.MapSchema;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MapSchemaTest {
 
     @Test
-    void testRequiredWithNull() {
-        Validator v = new Validator();
-        MapSchema schema = v.map();
+    public void test() {
+        Validator validator = new Validator();
 
-        // Проверка для пустой мапы и null
-        assertTrue(schema.isValid(null));
+        assertTrue(validator.map().isValid(null));
+        assertFalse(validator.map().required().isValid(null));
 
-        // Проверка для пустой карты
-        assertTrue(schema.isValid(new HashMap<>()));  // пустая карта тоже валидна
-
-        // Проверка после применения required
-        schema.required();
-        assertFalse(schema.isValid(null));  // null невалиден после required
-        assertTrue(schema.isValid(new HashMap<>()));  // Пустая карта валидна, т.к. она не null
+        assertTrue(validator.map().required().isValid(new HashMap<>(Map.of("a", 1, "b", 2, "c",
+                3))));
+        assertFalse(validator.map().required().sizeof(2).isValid(new HashMap<>(Map.of("a", 1, "b",
+                2, "c", 3))));
+        assertTrue(validator.map().required().sizeof(2).isValid(new HashMap<>(Map.of("a", 1, "b",
+                2))));
     }
 
     @Test
-    void testShapeValidation() {
-        Validator v = new Validator();
-        MapSchema schema = v.map();
-
+    public void schemasTest() {
+        Validator validator = new Validator();
+        MapSchema mapSchema = validator.map();
 
         Map<String, BaseSchema<String>> schemas = new HashMap<>();
-        schemas.put("firstName", v.string().required());
-        schemas.put("lastName", v.string().required().minLength(2));
-
-        schema.shape(schemas);
+        schemas.put("firstName", validator.string().required());
+        schemas.put("lastName", validator.string().required().minLength(2));
 
 
-        Map<String, String> validMap = new HashMap<>();
-        validMap.put("firstName", "John");
-        validMap.put("lastName", "Smith");
-        assertTrue(schema.isValid(validMap));  // Ожидаем, что данные будут валидны
+        mapSchema.shape(schemas);
 
 
-        Map<String, String> invalidMap1 = new HashMap<>();
-        invalidMap1.put("firstName", "John");
-        assertFalse(schema.isValid(invalidMap1));  // Ожидаем, что данные не будут валидны, т.к. нет lastName
+        Map<String, String> human1 = new HashMap<>();
+        human1.put("firstName", "John");
+        human1.put("lastName", "Simons");
+        assertTrue(mapSchema.isValid(human1));
 
 
-        Map<String, String> invalidMap2 = new HashMap<>();
-        invalidMap2.put("firstName", "John");
-        invalidMap2.put("lastName", "A");
-        assertFalse(schema.isValid(invalidMap2));
+        Map<String, String> human2 = new HashMap<>();
+        human2.put("firstName", "John");
+        human2.put("lastName", null);
+        assertFalse(mapSchema.isValid(human2));
+
+        Map<String, String> human3 = new HashMap<>();
+        human3.put("firstName", "Anna");
+        human3.put("lastName", "B");
+        assertFalse(mapSchema.isValid(human3));
+
+
+        Map<String, String> human4 = new HashMap<>();
+        human4.put("firstName", "John");
+        assertFalse(mapSchema.isValid(human4));
     }
-
 }
-

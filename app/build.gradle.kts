@@ -18,6 +18,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(kotlin("stdlib"))
     testImplementation("org.assertj:assertj-core:3.24.2")
+    implementation(kotlin("script-runtime"))
 }
 
 tasks.test {
