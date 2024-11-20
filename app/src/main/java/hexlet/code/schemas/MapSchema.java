@@ -1,10 +1,8 @@
 package hexlet.code.schemas;
 
 import java.util.Map;
+import java.util.Objects;
 
-/**
- * Schema for validating map values.
- */
 public final class MapSchema extends BaseSchema<Map<?, ?>> {
 
     /**
@@ -15,8 +13,7 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
      */
     @Override
     public MapSchema required() {
-        super.required();
-        addCheck(value -> value instanceof Map);
+        addCheck("required", Objects::nonNull);
         return this;
     }
 
@@ -28,7 +25,7 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
      * @return The current MapSchema instance for chaining.
      */
     public MapSchema sizeof(int size) {
-        addCheck(map -> map.size() == size);
+        addCheck("sizeof-" + size, map -> map.size() == size);  // Проверка размера Map
         return this;
     }
 
@@ -40,12 +37,10 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
      * @return The current MapSchema instance for chaining.
      */
     public <T> MapSchema shape(Map<String, BaseSchema<T>> schemas) {
-        addCheck(map -> {
-
+        addCheck("shape", map -> {
             if (map == null) {
                 return false;
             }
-
             return schemas.entrySet().stream().allMatch(entry -> {
                 String key = entry.getKey();
                 BaseSchema<T> schema = entry.getValue();

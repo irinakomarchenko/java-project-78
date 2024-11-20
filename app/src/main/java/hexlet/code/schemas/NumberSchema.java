@@ -1,5 +1,7 @@
 package hexlet.code.schemas;
 
+import java.util.Objects;
+
 /**
  * Schema for validating numeric values.
  */
@@ -13,8 +15,7 @@ public final class NumberSchema extends BaseSchema<Number> {
      */
     @Override
     public NumberSchema required() {
-        super.required();
-        addCheck(value -> value instanceof Number);
+        addCheck("required", Objects::nonNull);
         return this;
     }
 
@@ -25,7 +26,7 @@ public final class NumberSchema extends BaseSchema<Number> {
      * @return The current NumberSchema instance for chaining.
      */
     public NumberSchema positive() {
-        addCheck(value -> value == null || value.doubleValue() > 0);
+        addCheck("positive", value -> value == null || value.doubleValue() > 0);
         return this;
     }
 
@@ -37,8 +38,8 @@ public final class NumberSchema extends BaseSchema<Number> {
      * @return The current NumberSchema instance for chaining.
      */
     public NumberSchema range(int min, int max) {
-        addCheck(value -> value != null && value.doubleValue() >= min && value.doubleValue() <= max);
+        addCheck("range-" + min + "-" + max, value -> value != null
+                && value.doubleValue() >= min && value.doubleValue() <= max);
         return this;
     }
-
 }

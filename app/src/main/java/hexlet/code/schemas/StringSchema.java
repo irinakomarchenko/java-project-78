@@ -1,8 +1,7 @@
 package hexlet.code.schemas;
 
-/**
- * Schema for validating string values.
- */
+import java.util.function.Predicate;
+
 public final class StringSchema extends BaseSchema<String> {
 
     /**
@@ -13,24 +12,9 @@ public final class StringSchema extends BaseSchema<String> {
      */
     @Override
     public StringSchema required() {
-        super.required();
-        addCheck(value -> !value.isEmpty());
-        return this;
-    }
+        Predicate<String> requiredCheck = value -> value != null && !value.isEmpty();
+        addCheck("required", requiredCheck);
 
-    /**
-     * Validates that the string contains the specified substring.
-     *
-     * @param substring The substring that the string must contain.
-     * @return The current StringSchema instance for chaining.
-     * @throws IllegalArgumentException If the substring is null.
-     */
-    public StringSchema contains(String substring) {
-        if (substring == null) {
-            throw new IllegalArgumentException("Substring cannot be null");
-        }
-
-        addCheck(value -> value.contains(substring));
         return this;
     }
 
@@ -46,8 +30,27 @@ public final class StringSchema extends BaseSchema<String> {
             throw new IllegalArgumentException("Minimum length cannot be negative");
         }
 
-        addCheck(value -> value.length() >= minLength);
+        Predicate<String> lengthCheck = value -> value != null && value.length() >= minLength;
+
+        addCheck("minLength_" + minLength, lengthCheck);
+
+        return this;
+    }
+
+    /**
+     * Validates that the string contains the specified substring.
+     *
+     * @param substr The substring that the string must contain.
+     * @return The current StringSchema instance for chaining.
+     * @throws IllegalArgumentException If the substring is null.
+     */
+    public StringSchema contains(String substr) {
+        if (substr == null) {
+            throw new IllegalArgumentException("Substring cannot be null");
+        }
+
+        Predicate<String> containsCheck = value -> value != null && value.contains(substr);
+        addCheck("contains" + substr, containsCheck);
         return this;
     }
 }
-

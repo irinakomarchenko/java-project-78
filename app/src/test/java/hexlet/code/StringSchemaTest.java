@@ -11,12 +11,31 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 public class StringSchemaTest {
 
     @Test
-    void testContainsValidation() {
+    void testStringSchemaValidation() {
         Validator v = new Validator();
-        StringSchema schema = (StringSchema) v.string().required();
+        StringSchema schema = v.string();
 
-        assertTrue(schema.contains("wh").isValid("what does the fox say"));
-        assertFalse(schema.contains("whatthe").isValid("what does the fox say"));
+        assertTrue(schema.isValid("")); // true
+        assertTrue(schema.isValid(null)); // true
+
+        schema.required();
+        assertFalse(schema.isValid(null)); // false
+        assertFalse(schema.isValid("")); // false
+        assertTrue(schema.isValid("what does the fox say")); // true
+        assertTrue(schema.isValid("hexlet")); // true
+
+        // Проверка на contains
+        assertTrue(schema.contains("wh").isValid("what does the fox say")); // true
+        assertTrue(schema.contains("what").isValid("what does the fox say")); // true
+        assertFalse(schema.contains("whatthe").isValid("what does the fox say")); // false
+
+        assertFalse(schema.isValid("what does the fox say")); // false
+
+        var schema1 = v.string();
+        schema1.minLength(10);
+        schema1.minLength(4);
+
+        assertTrue(schema1.isValid("Hexlet"));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             schema.contains(null);
@@ -24,17 +43,4 @@ public class StringSchemaTest {
         assertTrue(exception.getMessage().contains("Substring cannot be null"));
     }
 
-    @Test
-    void testMinLengthValidation() {
-        Validator v = new Validator();
-        StringSchema schema = v.string();
-
-        schema.minLength(3);
-        assertTrue(schema.isValid("abc"));
-        assertFalse(schema.isValid("ab"));
-
-        schema.minLength(5);
-        assertTrue(schema.isValid("abcdef"));
-        assertFalse(schema.isValid("abcd"));
-    }
 }

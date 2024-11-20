@@ -1,7 +1,7 @@
 package hexlet.code.schemas;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -12,8 +12,7 @@ import java.util.function.Predicate;
  */
 public abstract class BaseSchema<T> {
 
-    private final List<Predicate<T>> checks = new ArrayList<>();
-    private boolean isRequired = false;
+    private final Map<String, Predicate<T>> checks = new LinkedHashMap<>();
 
     /**
      * Marks the schema as required.
@@ -22,18 +21,19 @@ public abstract class BaseSchema<T> {
      * @return The current schema instance for chaining.
      */
     public BaseSchema<T> required() {
-        this.isRequired = true;
-        addCheck(Objects::nonNull);
+        //this.isRequired = true;
+        addCheck("required", Objects::nonNull);
         return this;
     }
 
     /**
      * Adds a validation condition to the schema.
      *
+     * @param key A unique identifier for the check.
      * @param check A predicate representing the validation logic.
      */
-    protected void addCheck(Predicate<T> check) {
-        checks.add(check);
+    protected void addCheck(String key, Predicate<T> check) {
+        checks.merge(key, check, Predicate::and);
     }
 
     /**
@@ -43,9 +43,6 @@ public abstract class BaseSchema<T> {
      * @return True if the value satisfies all conditions, false otherwise.
      */
     public boolean isValid(T value) {
-        if (value == null) {
-            return !isRequired;
-        }
-        return checks.stream().allMatch(check -> check.test(value));
+        return checks.values().stream().allMatch(check -> check.test(value));
     }
 }
