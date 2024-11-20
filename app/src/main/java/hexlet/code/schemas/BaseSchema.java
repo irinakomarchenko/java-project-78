@@ -21,7 +21,6 @@ public abstract class BaseSchema<T> {
      * @return The current schema instance for chaining.
      */
     public BaseSchema<T> required() {
-        //this.isRequired = true;
         addCheck("required", Objects::nonNull);
         return this;
     }

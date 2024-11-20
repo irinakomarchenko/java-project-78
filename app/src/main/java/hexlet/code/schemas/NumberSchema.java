@@ -8,18 +8,6 @@ import java.util.Objects;
 public final class NumberSchema extends BaseSchema<Number> {
 
     /**
-     * Marks the schema as required.
-     * Ensures the value is a number and not null.
-     *
-     * @return The current NumberSchema instance for chaining.
-     */
-    @Override
-    public NumberSchema required() {
-        addCheck("required", Objects::nonNull);
-        return this;
-    }
-
-    /**
      * Validates that the number is positive.
      * Null values are considered valid unless required is explicitly set.
      *

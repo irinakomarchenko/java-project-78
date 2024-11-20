@@ -14,6 +14,8 @@ public class NumberSchemaTest {
         Validator v = new Validator();
         NumberSchema schema = v.number();
 
+        assertTrue(schema.isValid(null));
+
         schema.range(1, 10);
         assertTrue(schema.isValid(5));
         assertFalse(schema.isValid(0));
@@ -21,8 +23,6 @@ public class NumberSchemaTest {
 
         assertTrue(schema.isValid(1.5));
         assertFalse(schema.isValid(10.5));
-
-        assertTrue(schema.isValid(null));
 
         schema.required();
         assertFalse(schema.isValid(null));

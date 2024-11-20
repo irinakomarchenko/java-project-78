@@ -32,7 +32,7 @@ public final class StringSchema extends BaseSchema<String> {
 
         Predicate<String> lengthCheck = value -> value != null && value.length() >= minLength;
 
-        addCheck("minLength_" + minLength, lengthCheck);
+        addCheck("minLength-" + minLength, lengthCheck);
 
         return this;
     }

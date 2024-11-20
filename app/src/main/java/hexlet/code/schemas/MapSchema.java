@@ -13,7 +13,7 @@ public final class MapSchema extends BaseSchema<Map<?, ?>> {
      */
     @Override
     public MapSchema required() {
-        addCheck("required", Objects::nonNull);
+        super.required();
         return this;
     }
 
